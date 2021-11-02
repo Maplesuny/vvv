@@ -1,18 +1,23 @@
 <template>
-  <div class="echarts-box">
-    <div id="myEcharts" :style="{ width: '110%', height: 160*channel.length+'px' }"></div>
-  </div>
+  <v-container class="grey lighten-5">
+    <v-row no-gutter style="flex-wrap:nowrap;">
+      
+      <div class="echarts-box">
+        <div id="myEcharts" :style="{ width: '110%', height: 160 * channel.length + 'px' }"></div>
+      </div>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue';
 import * as echarts from 'echarts';
 
-const channel = ['A1','A2','O1','O2','T5','T6','T3','T4','F7','F8','Fp1','Fp2','P3','P4','C3','C4','F3','F4','PZ','Cz','Fz'];
+const channel = ['A1', 'A2', 'O1', 'O2', 'T5', 'T6', 'T3', 'T4', 'F7', 'F8', 'Fp1', 'Fp2', 'P3', 'P4', 'C3', 'C4', 'F3', 'F4', 'PZ', 'Cz', 'Fz'];
 
 
 export default defineComponent({
-  setup() {
+  setup () {
     onMounted(() => {
       type EChartsOption = echarts.EChartsOption;
       var chartDom = document.getElementById('myEcharts')!;
@@ -65,7 +70,7 @@ export default defineComponent({
           height: '100px',
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           top: (idx * 320) / 2 + 35 + 'px',
-          left:'5%'
+          left: '5%'
         });
 
         series.push({
@@ -100,19 +105,19 @@ export default defineComponent({
       };
       option && myChart.setOption(option);
 
-    //   自适应高和宽
-/*      window.onresize = function () {
-        resizeMyChartContainer();
-        myChart.resize();
-      };*/
+      //   自适应高和宽
+      /*      window.onresize = function () {
+              resizeMyChartContainer();
+              myChart.resize();
+            };*/
     });
-  return {channel}
+    return { channel }
   },
 });
 </script>
 
 <style scoped>
-/*#echarts-box:first-child {
-  height: '1000px';
-}*/
+#echarts-box {
+  display: flex;
+}
 </style>

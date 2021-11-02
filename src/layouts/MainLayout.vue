@@ -10,9 +10,8 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
         <q-toolbar-title>
-          Quasar App
+          CMUH - AI - CENTER
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -38,9 +37,12 @@
         />
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <router-view />
+      <!-- // 當滑到底下，可以有個buttom按下去往上 -->
+      <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
+                <q-btn fab icon="keyboard_arrow_up" color="accent"></q-btn>
+            </q-page-scroller>
     </q-page-container>
   </q-layout>
 </template>

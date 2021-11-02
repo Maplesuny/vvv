@@ -162,9 +162,12 @@ export default defineComponent({
                             // console.log('end', xaxis_end);
                             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-plus-operands
                             console.log('Range of :' + option.xAxis.data[xaxis_start] + ' second 到 ' + option.xAxis.data[xaxis_end] + ' second');
+
+
+                            console.log(brushComponent)
                         }
                     });
-                    //   使用剛指定的配置和資料顯示圖表
+                    //   使用剛指定的配置和資料顯示圖表`
                     myChart.setOption(option);
                 })
                 .catch((err) => {
