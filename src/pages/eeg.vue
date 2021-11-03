@@ -1,15 +1,15 @@
 <template>
     <div class="echarts-box">
-        <div id="myEcharts" :style="{ width: '900px', height: 40 * channel.length + 'px' }"></div>
-        <div id="testtext" :style="{ width: '700px', height: 33.7 * channel.length + 'px' }">
-            <p>Value will put here</p>
+        <div id="myEcharts" :style="{ width: '1000px', height: 46 * channel.length + 'px' }"></div>
+        <div id="testtext" :style="{ width: '700px', height: 40 * channel.length + 'px' }">
+            <p>{{ ss_ing }}</p>
         </div>
     </div>
 </template>
 
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import * as echarts from 'echarts';
 import axios from 'axios';
 
@@ -20,11 +20,14 @@ const channel = ['Fp1-A1', 'F3-A1', 'C3-A1', 'P3-A1', 'O1-A1', 'Fp2-A2', 'F4-A2'
 
 export default defineComponent({
     setup () {
-        let numArray = [];
-        let xaxis_start;
-        let xaxis_end;
-        var array_min = 0
-        let array_max = 0
+        let select_start = ref(0)
+        let select_end = ref(0)
+        let ss_ing = ref('')
+        let rnage_start: any
+        let range_end: any
+
+
+
         onMounted(() => {
             type EChartsOption = echarts.EChartsOption;
             let chartDom = document.getElementById('myEcharts')!
@@ -66,29 +69,12 @@ export default defineComponent({
                 console.log('請求成功')
                 // 收全部的data
                 let storge_data = res.data as never[]
-                // array_data 專們給比大小用
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                let array_data = res.data
-
                 // 計算收進來的data有幾個[]
                 // console.log(Object.keys(storge_data).length)
                 let count_channel: number[] = []
                 for (let i = 0; i < Object.keys(storge_data).length; i++) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    let compare_min = Math.min(...array_data[i])
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    let compare_max = Math.max(...array_data[i])
-
-                    if (array_max < compare_max) {
-                        array_max = compare_max
-                    } else if (array_min > compare_min) {
-                        array_min = compare_min
-                    }
-
                     count_channel.push(i)
                 }
-                console.log('min:', array_min)
-                console.log('max', array_max)
 
                 let last_element_index = count_channel.length - 1
                 // 根據Channel數量開始跑迴圈依序push
@@ -97,7 +83,7 @@ export default defineComponent({
                         title.push({
                             textBaseline: 'middle',
                             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                            top: (idx * 320) / 9 + 40 + 'px',
+                            top: (idx * 330) / 8 + 40 + 'px',
                             left: '1%',
                             text: eeg_parameter,
                         });
@@ -120,9 +106,9 @@ export default defineComponent({
                             },
                         });
                         grid.push({
-                            height: '10px',
+                            height: '30px',
                             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                            top: (idx * 320) / 9 + 40 + 'px',
+                            top: (idx * 330) / 8 + 40 + 'px',
                             left: '13%',
                             right: '13%',
                             containLabel: false
@@ -142,10 +128,10 @@ export default defineComponent({
                         title.push({
                             textBaseline: 'middle',
                             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                            top: (idx * 320) / 9 + 40 + 'px',
+                            top: (idx * 330) / 8 + 40 + 'px',
                             left: '1%',
                             text: eeg_parameter,
-                            bottom:'20'
+                            bottom: '20'
                         });
                         xAxis.push({
                             show: true,
@@ -168,7 +154,7 @@ export default defineComponent({
                         grid.push({
                             height: '30px',
                             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                            top: (idx * 320) / 9 + 40 + 'px',
+                            top: (idx * 330) / 8 + 40 + 'px',
                             left: '13%',
                             right: '13%',
                             containLabel: false
@@ -184,6 +170,7 @@ export default defineComponent({
                         })
                     }
                 });
+
                 let option = {
                     animation: false,
                     title: title,
@@ -194,7 +181,7 @@ export default defineComponent({
                     dataZoom: [{
                         type: 'inside',
                         xAxisIndex: count_channel,
-                        zoomOnMouseWheel: 'alt'
+                        // zoomOnMouseWheel: 'alt'
                     }, {
                         type: 'slider',
                         startValue: 0,
@@ -209,7 +196,8 @@ export default defineComponent({
                         trigger: 'axis'
                     },
                     toolbox: {
-                        right: 80,
+                        right: 5,
+                        bottom: 'auto',
                         feature: {
                             dataZoom: {
                                 yAxisIndex: 'none',
@@ -244,53 +232,59 @@ export default defineComponent({
                             borderColor: 'rgba(220,20,57,0.8)',
                         },
                     },
-                    visualMap: [{
-                        top: 50,
-                        right: 20,
-                        type: 'continuous',
-                        max: array_max,
-                        min: array_min,
-                        precision: 3,
-                        text: ['Hight', 'Low'],
-                        // Map顯示數字
-                        // calculable: true,
-                        inRange: {
-                            color: ['black', 'black'],
-                            colorLightness: [0.2, 0.8]
-                        },
-
-                    }]
-
                 }
-                myChart.on('brushSelected', function (paraams: any) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-                    let brushComponent = paraams.batch[0];
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-                    numArray = brushComponent.areas[0]
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-                    xaxis_start = brushComponent.areas[0].range[0];
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-                    xaxis_end = brushComponent.areas[0].range[1];
 
+
+                function select_brushType (params: any, whichLinx: string) {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-                    // let aa = option.xAxis[21].data[xaxis_start]
+                    let brushComponent = params.batch[0];
+                    // 判斷是 lineX 或 rect
+                    if (whichLinx !== 'lineX') {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+                        rnage_start = brushComponent.areas[0].range[0][0]
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+                        range_end = brushComponent.areas[0].range[0][1]
+                    } else {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+                        rnage_start = brushComponent.areas[0].range[0]
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+                        range_end = brushComponent.areas[0].range[1]
+                    }
+                    console.log('rnage_start', rnage_start)
+                    console.log('rnage_end', range_end)
+                    // 再將rnage座標轉作為xy的座標(coordRange的值)
+                    let coordRange_start = myChart.convertFromPixel({ seriesIndex: 0 }, [rnage_start])[0];
+                    let corrdRange_end = myChart.convertFromPixel({ seriesIndex: 0 }, [range_end])[0];
+                    console.log('coordRange_end', corrdRange_end)
+                    // 因為取出的座標是點數，要除上總點數，1秒512個點，有幾秒要乘上去
+                    select_start.value = (coordRange_start / (512 * end_time)) * end_time
+                    select_end.value = (corrdRange_end / (512 * end_time)) * end_time
+                    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                    ss_ing.value = 'Rect Range of :' + select_start.value + ' second 到 ' + select_end.value + ' second'
+                    console.log('ss_ing', ss_ing.value)
+                }
+
+                myChart.on('brushSelected', function (params: any) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+                    let brushComponent = params.batch[0];
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    //    console.log(brushComponent)
-                    //    console.log(option)
-               
-                });
-               
+                    if (brushComponent.areas[0] !== undefined) {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+                        let type = brushComponent.areas[0].brushType
+                        select_brushType(params, type)
+
+                    }
+                })
                 option && myChart.setOption(option);
-                
+
             }).catch((error) => {
                 //請求失敗
                 alert('請求失敗，請重新嘗試...')
             })
 
-
         })
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        return { channel }
+        return { channel, ss_ing }
     },
 })
 </script>
@@ -300,3 +294,7 @@ export default defineComponent({
     display: flex;
 }
 </style>
+
+function scrollEvent(e: any) {
+  throw new Error('Function not implemented.');
+}
