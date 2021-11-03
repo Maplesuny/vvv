@@ -25,9 +25,6 @@ export default defineComponent({
         let ss_ing = ref('')
         let rnage_start: any
         let range_end: any
-
-
-
         onMounted(() => {
             type EChartsOption = echarts.EChartsOption;
             let chartDom = document.getElementById('myEcharts')!
@@ -170,6 +167,7 @@ export default defineComponent({
                         })
                     }
                 });
+
 
                 let option = {
                     animation: false,

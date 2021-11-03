@@ -11,6 +11,8 @@ const routes: RouteRecordRaw[] = [
       { path: '/date', component: () => import('pages/echart_date.vue') },
       { path: '/page', component: () => import('pages/page.vue') },
       { path: '/eeg', component: () => import('pages/eeg.vue') },
+      { path: '/eeg2', component: () => import('pages/eeg2.vue') },
+      { path: '/dd', component: () => import('pages/dd.vue') },
     ],
   },
 
