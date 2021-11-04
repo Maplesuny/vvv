@@ -83,6 +83,22 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-  }
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+    // 行末分號（啟用）
+    'semi': ['warn', 'always'],
+    // 函式名後的空格（禁用）
+    'space-before-function-paren': ['error', 'never'],
+    // 縮排規範（兩個空格，一倍縮排）
+    'vue/script-indent': ['error', 2, {'baseIndent': 1}],
+  },
+  overrides: [
+    {
+      'files': ['*.vue'],
+      'rules': {
+        'indent': 'off'
+      }
+    }
+  ]
+
 }
