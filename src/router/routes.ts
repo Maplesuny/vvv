@@ -13,6 +13,7 @@ const routes: RouteRecordRaw[] = [
       { path: '/eeg', component: () => import('pages/eeg.vue') },
       { path: '/eeg2', component: () => import('pages/eeg2.vue') },
       { path: '/dd', component: () => import('pages/dd.vue') },
+      { path: '/com', component: () => import('components/CompositionComponent.vue') },
     ],
   },
 

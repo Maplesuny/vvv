@@ -7,22 +7,10 @@
       <q-btn label='Prompt' class="btn btn-primary" @click="prompt = true"/>
       <br>
       <br>
-      <form @submit.prevent="addTodo()">
-        <label>New ToDO</label>
-      </form>
-      <h2>Todo List</h2>
-      <ul>
-        <li v-for="(todo,index) in todos" :key = "index">
-          <span :class='{done:todo.done}' @click='doneTodo(todo)'>
-            {{todo.content}}
-          </span>
-          <q-btn label='Remove' class="btn btn-primary" @click="removeTodo(index)"></q-btn>
-        </li>
-      </ul>
       {{ ss_ing }}
-
+      <br>
+      {{select_start}}
       <q-dialog v-model="prompt" persistent>
-
         <q-card style="min-width: 350px">
           <q-card-section>
             <div class="text-h6">Your address {{ ss_ing }}</div>
@@ -38,18 +26,26 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
+    <br>
+      <todo2 :inputTodos="ss_ing">
+      </todo2>
     </div>
-
   </div>
 </template>
 
 <script lang="ts">
-  import { defineComponent, onMounted, ref } from 'vue';
+  import { defineComponent, onMounted, ref,reactive} from 'vue';
+  import toodo from 'components/todo.vue'
   import * as echarts from 'echarts';
   import json from 'assets/10s.json';
+
   // Channel Name
   const channel = ['Fp1-A1','F3-A1','C3-A1','P3-A1','O1-A1','Fp2-A2','F4-A2','C4-A2','F4-A2','Q2-A2','F7-A1','T3-A1','T5-A1','F8-A2','T4-A2','T6-A2','F3','F4','PZ','Cz','Fz','ECG',];
   export default defineComponent({
+    components:{
+      // eslint-disable-next-line vue/no-unused-components
+      todo2:toodo
+    },
     setup() {
       let select_start = ref(0);
       let select_end = ref(0);
@@ -57,20 +53,7 @@
       let rnage_start: any;
       let range_end: any;
 
-      const newTodo = ref('');
-      const defaultData = [{
-        done: false,
-        content: 'Write a blog post'
-      }];
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const test = localStorage.getItem('todos')
-      //const todosData = JSON.parse(test);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      let test_string: unknown;
-      test_string = JSON.parse(localStorage.getItem('currentUser') || '{}');
-
-
-
+      /// onMounted
       onMounted(() => {
         type EChartsOption = echarts.EChartsOption;
         let chartDom = document.getElementById('myEcharts')!;
@@ -80,6 +63,7 @@
         let start_time = 0;
         let end_time = 10;
         let get_apiJSON = json;
+
         // 將數量換算成秒 ,number : 有幾筆資料
         function Convert_sec(number: number) {
           const dataArray = [];
@@ -307,7 +291,6 @@
             ' second';
           console.log('ss_ing', ss_ing.value);
         }
-
         myChart.on('brushSelected', function(params: any) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
           let brushComponent = params.batch[0];
@@ -322,7 +305,8 @@
         option && myChart.setOption(option);
       });
 
-      return { channel, ss_ing ,prompt:ref(false)};
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      return { channel, ss_ing ,prompt:ref(false),select_start,select_end};
     },
   });
 </script>
